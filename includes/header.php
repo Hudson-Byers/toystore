@@ -1,12 +1,14 @@
 <?php
 
     /* TO-DO: Include database-connection.php to connect to the database
-              Hint: Both header.php and database-connection.php are inside the includes folder
+              Hint: Use require_once to ensure the file is only loaded once.
+                    Both header.php and database-connection.php are inside the includes folder
     */
 
 
     /* TO-DO: Include session.php to handle login sessions
-              Hint: Both header.php and session.php are inside the includes folder
+              Hint: Use require_once to avoid redeclaring functions if the file is loaded elsewhere.
+                    Both header.php and session.php are inside the includes folder
     */
     
 
