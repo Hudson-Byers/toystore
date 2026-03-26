@@ -1,15 +1,8 @@
 <?php
 
-    /* TO-DO: Include database-connection.php to connect to the database
-              Hint: Use require_once to ensure the file is only loaded once.
-                    Both header.php and database-connection.php are inside the includes folder
-    */
+    require_once 'database-connection.php';
 
-
-    /* TO-DO: Include session.php to handle login sessions
-              Hint: Use require_once to avoid redeclaring functions if the file is loaded elsewhere.
-                    Both header.php and session.php are inside the includes folder
-    */
+    require_once 'session.php';
     
 
 ?>
@@ -43,11 +36,7 @@
             <ul>
                 <li><a href="index.php">Toy Catalog</a></li>
 
-                <!-- TO-DO: Update this link to show "Log In" or "Log Out" depending on whether the user is logged in
-                            Hint: Check session.php for a flag variable tracking login status
-                                  Consider using the null-coalescing operator
-                -->
-                <li><a href="login.php">Log In</a></li>  
+                <li><a href="<?php echo $logged_in ? 'logout.php' : 'login.php'; ?>"><?php echo $logged_in ? 'Log Out' : 'Log In'; ?></a></li>  
                  
             </ul>
         </nav>

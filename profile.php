@@ -1,33 +1,31 @@
 <?php
 
-    /* TO-DO: Include header.php
-            Hint: header.php is inside the includes folder and already connects to the database
-    */
-
-
-
+    include 'includes/header.php';
             
 	require_login($logged_in);                              // Redirect user if not logged in
 	$username = $_SESSION['username'];                      // Retrieve the username from the session data
     $custID   = $_SESSION['custID'];                        // Retrieve the custID from the session data
 
+    /*
+	 * Retrieve all orders for a specific customer from the database.
+	 * 
+	 * @param PDO $pdo       An instance of the PDO class.
+	 * @param int $custID    The customer ID to retrieve orders for.
+	 * @return array         An array of associative arrays containing order and toy information.
+	 */
+	function get_customer_orders(PDO $pdo, int $custID) {
+		$sql = "SELECT orders.orderID, orders.custID, orders.toyID, orders.quantity, orders.date_ordered, 
+				       orders.deliv_addr, orders.date_deliv, toy.name, toy.img_src
+				FROM orders
+				JOIN toy ON orders.toyID = toy.toyID
+				WHERE orders.custID = :custID
+				ORDER BY orders.date_ordered DESC;";
+		
+		return pdo($pdo, $sql, ['custID' => $custID])->fetchAll();
+	}
 
-
-    /* TO-DO: Create a function that retrieves ALL order information for the logged-in user 
-
-              Your function should:
-                1. Query the appropriate tables to retrieve:
-                    - order information
-                    - toy name
-                    - toy image
-                    Make sure to sort the results in descending order (most recent first)
-                2. Execute the SQL query using the pdo() helper function and fetch the results
-                3. Return orders for the logged-in user only
-	*/
-
-
-
-    /* TO-DO: Call function to retrieve orders for the logged-in user */
+    /* Call function to retrieve orders for the logged-in user */
+	$orders = get_customer_orders($pdo, $custID);
 
 	
 ?>
@@ -36,51 +34,49 @@
 
     <h1>Welcome, <?= htmlspecialchars($username) ?>!</h1>
 
-    <!-- TO-DO: Check if no orders were returned from the database -->
-    <?php  ?>
+    <!-- Check if no orders were returned from the database -->
+    <?php if (empty($orders)): ?>
         <div class="no-orders">
             <p>You have no orders yet.</p>
         </div>
 
-    <!-- TO-DO: Otherwise (order data was returned) -->
-    <?php ?>
+    <!-- Otherwise (order data was returned) -->
+    <?php else: ?>
         <div class="orders-container">
 
-            <!-- TO-DO: Loop through each order returned from the database -->
-            <?php  ?>
+            <!-- Loop through each order returned from the database -->
+            <?php foreach ($orders as $order): ?>
 
                 <div class="order-card">
 
-                    <!-- TO-DO: Display the toy image and update the alt text to the toy name -->
-                    <img src="<?= '' ?>" alt="<?= '' ?>">
+                    <!-- Display the toy image and update the alt text to the toy name -->
+                    <img src="<?= $order['img_src'] ?>" alt="<?= $order['name'] ?>">
 
                     <div class="order-info">
 
-                        <!-- TO-DO: Display the order number -->
-                        <p><strong>Order Number:</strong> <?= '' ?></p>
+                        <!-- Display the order number -->
+                        <p><strong>Order Number:</strong> <?= $order['orderID'] ?></p>
 
-                        <!-- TO-DO: Display the toy name -->
-                        <p><strong>Toy:</strong> <?= '' ?></p>
+                        <!-- Display the toy name -->
+                        <p><strong>Toy:</strong> <?= $order['name'] ?></p>
 
-                        <!-- TO-DO: Display the order quantity -->
-                        <p><strong>Quantity:</strong> <?= '' ?></p>
+                        <!-- Display the order quantity -->
+                        <p><strong>Quantity:</strong> <?= $order['quantity'] ?></p>
 
-                        <!-- TO-DO: Display the date ordered -->
-                        <p><strong>Date Ordered:</strong> <?= '' ?></p>
+                        <!-- Display the date ordered -->
+                        <p><strong>Date Ordered:</strong> <?= $order['date_ordered'] ?></p>
 
-                        <!-- TO-DO: Display the delivery address -->
-                        <p><strong>Delivery Address:</strong> <?= '' ?></p>
+                        <!-- Display the delivery address -->
+                        <p><strong>Delivery Address:</strong> <?= $order['deliv_addr'] ?></p>
 
-                        <!-- TO-DO: Display the delivery date
-                                    Hint: If the delivery date is NULL, use the null-coalescing operator to display a placeholder message like "Pending"
-                         -->
-                        <p><strong>Delivery Date:</strong> <?='' ?></p>
+                        <!-- Display the delivery date (with null check) -->
+                        <p><strong>Delivery Date:</strong> <?= $order['date_deliv'] ?? 'Pending' ?></p>
                     </div>
                 </div>
 
-            <?php ?>
+            <?php endforeach; ?>
         </div>
-    <?php ?>
+    <?php endif; ?>
 
 </main>
 

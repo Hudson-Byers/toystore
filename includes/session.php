@@ -41,12 +41,19 @@
 
 	
 
-	/* TO-DO: Create a function called authenticate() that:
-          1. Accepts $pdo, username, and password as parameters
-          2. Queries the customer table to find a row matching the provided username and password
-          3. Executes the SQL query using the pdo() helper function and fetches the result
-          4. Returns the matching user row if found
-	*/
+	/*
+	 * Authenticate a user by verifying username and password against the customer table.
+	 * 
+	 * @param PDO $pdo       An instance of the PDO class.
+	 * @param string $username  The username to authenticate.
+	 * @param string $password  The password to authenticate.
+	 * @return array|null    An associative array containing the customer information if found, null otherwise.
+	 */
+	function authenticate(PDO $pdo, string $username, string $password) {
+		$sql = "SELECT * FROM customer WHERE username = :username AND password = :password;";
+		
+		return pdo($pdo, $sql, ['username' => $username, 'password' => $password])->fetch();
+	}
 	
 
 // End of session.php – do NOT add any whitespace, new lines, or closing tag after this line
